@@ -1,10 +1,40 @@
 {
-  "name": "teamflow",
+  "name": "basecamp-nextjs",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "backend": "cd backend && npm run dev",
-    "frontend": "cd frontend && npm run dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.395.0",
+    "multer": "^1.4.5-lts.1",
+    "next": "^14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "recharts": "^2.12.7",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "sqlite3": "^5.1.7",
+    "tailwind-merge": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3"
   }
 }
