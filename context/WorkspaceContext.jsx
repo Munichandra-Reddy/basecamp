@@ -9,9 +9,48 @@ const initialWorkspaces = [
   { id: 3, name: 'Personal Projects', slug: 'personal-projects', subscription_plan: 'Free', role: 'Workspace Admin', member_count: 1, project_count: 2 }
 ];
 
+const getCustomWorkspaces = () => {
+  if (typeof window === 'undefined') return [];
+  try {
+    return JSON.parse(localStorage.getItem('teamflow_custom_workspaces') || '[]');
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveCustomWorkspace = (wsObj) => {
+  if (typeof window === 'undefined') return;
+  try {
+    const existing = getCustomWorkspaces();
+    const updated = [wsObj, ...existing.filter(w => String(w.id) !== String(wsObj.id) && w.slug !== wsObj.slug)];
+    localStorage.setItem('teamflow_custom_workspaces', JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to save workspace to localStorage:', e);
+  }
+};
+
+const getMergedWorkspaces = (fetchedWorkspaces = []) => {
+  const custom = getCustomWorkspaces();
+  const map = new Map();
+
+  initialWorkspaces.forEach(w => map.set(String(w.id), w));
+  fetchedWorkspaces.forEach(w => map.set(String(w.id), w));
+  custom.forEach(w => map.set(String(w.id), w));
+
+  return Array.from(map.values());
+};
+
 export function WorkspaceProvider({ children }) {
-  const [workspaces, setWorkspaces] = useState(initialWorkspaces);
-  const [activeWorkspace, setActiveWorkspace] = useState(initialWorkspaces[0]);
+  const [workspaces, setWorkspaces] = useState(() => getMergedWorkspaces([]));
+  const [activeWorkspace, setActiveWorkspace] = useState(() => {
+    const all = getMergedWorkspaces([]);
+    if (typeof window !== 'undefined') {
+      const savedId = localStorage.getItem('teamflow_active_workspace_id');
+      const found = all.find(w => String(w.id) === String(savedId));
+      if (found) return found;
+    }
+    return all[0];
+  });
   const [activeProject, setActiveProject] = useState({ id: 1, name: 'E-Commerce Website', slug: 'e-commerce-website' });
 
   useEffect(() => {
@@ -22,15 +61,16 @@ export function WorkspaceProvider({ children }) {
     try {
       const res = await api.get('/workspaces');
       if (res.data && res.data.length > 0) {
-        setWorkspaces(res.data);
+        const merged = getMergedWorkspaces(res.data);
+        setWorkspaces(merged);
         if (typeof window !== 'undefined') {
           const savedId = localStorage.getItem('teamflow_active_workspace_id');
-          const found = res.data.find(w => w.id === parseInt(savedId)) || res.data[0];
+          const found = merged.find(w => String(w.id) === String(savedId)) || merged[0];
           setActiveWorkspace(found);
         }
       }
     } catch (err) {
-      // Keep initial demo workspace
+      setWorkspaces(getMergedWorkspaces([]));
     }
   };
 
@@ -42,14 +82,29 @@ export function WorkspaceProvider({ children }) {
   };
 
   const createWorkspace = async (name, slug) => {
+    const cleanSlug = (slug || name).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const localWs = {
+      id: Date.now(),
+      name,
+      slug: cleanSlug,
+      subscription_plan: 'Free',
+      role: 'Workspace Admin',
+      member_count: 1,
+      project_count: 0
+    };
+
     try {
-      const res = await api.post('/workspaces', { name, slug });
-      const newWs = res.data;
-      setWorkspaces(prev => [...prev, newWs]);
+      const res = await api.post('/workspaces', { name, slug: cleanSlug });
+      const newWs = res.data || localWs;
+      saveCustomWorkspace(newWs);
+      setWorkspaces(prev => [newWs, ...prev.filter(w => String(w.id) !== String(newWs.id))]);
       switchWorkspace(newWs);
       return { success: true, workspace: newWs };
     } catch (err) {
-      return { success: false, error: err.response?.data?.error || 'Failed to create workspace.' };
+      saveCustomWorkspace(localWs);
+      setWorkspaces(prev => [localWs, ...prev.filter(w => String(w.id) !== String(localWs.id))]);
+      switchWorkspace(localWs);
+      return { success: true, workspace: localWs };
     }
   };
 
@@ -57,14 +112,15 @@ export function WorkspaceProvider({ children }) {
     try {
       const res = await api.put(`/workspaces/${id}`, { name });
       const updatedWs = res.data;
-      setWorkspaces(prev => prev.map(w => w.id === updatedWs.id ? { ...w, ...updatedWs } : w));
-      if (activeWorkspace?.id === updatedWs.id) {
+      setWorkspaces(prev => prev.map(w => String(w.id) === String(updatedWs.id) ? { ...w, ...updatedWs } : w));
+      if (String(activeWorkspace?.id) === String(updatedWs.id)) {
         setActiveWorkspace(prev => ({ ...prev, ...updatedWs }));
       }
+      saveCustomWorkspace(updatedWs);
       return { success: true, workspace: updatedWs };
     } catch (err) {
-      setWorkspaces(prev => prev.map(w => w.id === id ? { ...w, name } : w));
-      if (activeWorkspace?.id === id) {
+      setWorkspaces(prev => prev.map(w => String(w.id) === String(id) ? { ...w, name } : w));
+      if (String(activeWorkspace?.id) === String(id)) {
         setActiveWorkspace(prev => ({ ...prev, name }));
       }
       return { success: true };

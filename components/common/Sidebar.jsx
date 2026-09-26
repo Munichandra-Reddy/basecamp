@@ -10,8 +10,7 @@ import {
   FileText,
   MessageSquare,
   ClipboardCheck,
-  Settings,
-  Globe
+  Settings
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -69,15 +68,7 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        <div className="pt-4 border-t border-slate-100">
-          <NavLink
-            to="/"
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition"
-          >
-            <Globe className="w-4 h-4 text-slate-400" />
-            <span>🏠 Public Website</span>
-          </NavLink>
-        </div>
+
       </div>
 
       <div className="p-4 border-t border-slate-100 bg-slate-50/50">

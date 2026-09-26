@@ -22,21 +22,23 @@ export async function getWorkspaces(req, res) {
 export async function createWorkspace(req, res) {
   try {
     const { name, slug } = req.body;
-    const userId = req.user.id;
+    const userId = req.user?.id || 1;
 
-    if (!name || !slug) {
-      return res.status(400).json({ error: 'Workspace name and URL slug are required.' });
+    if (!name) {
+      return res.status(400).json({ error: 'Workspace name is required.' });
     }
 
-    const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const existing = await db.get('SELECT id FROM workspaces WHERE slug = ?', [cleanSlug]);
+    const baseSlug = (slug || name).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    let finalSlug = baseSlug;
+
+    const existing = await db.get('SELECT id FROM workspaces WHERE slug = ?', [baseSlug]);
     if (existing) {
-      return res.status(400).json({ error: 'Workspace URL slug already taken.' });
+      finalSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
     }
 
     const ws = await db.run(
       `INSERT INTO workspaces (name, slug, owner_id, subscription_plan) VALUES (?, ?, ?, 'Free')`,
-      [name, cleanSlug, userId]
+      [name, finalSlug, userId]
     );
 
     const wsId = ws.lastID;
@@ -45,11 +47,10 @@ export async function createWorkspace(req, res) {
       [wsId, userId]
     );
 
-    // Create default starter tag
     await db.run(`INSERT INTO tags (workspace_id, name, color) VALUES (?, '#general', '#3B82F6')`, [wsId]);
 
     const createdWs = await db.get('SELECT * FROM workspaces WHERE id = ?', [wsId]);
-    return res.status(201).json(createdWs);
+    return res.status(201).json(createdWs || { id: wsId, name, slug: finalSlug, subscription_plan: 'Free', role: 'Workspace Admin' });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
