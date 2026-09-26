@@ -4,6 +4,44 @@ import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+const getMergedTeamCount = (activeUser, fetchedMembers = []) => {
+  if (typeof window === 'undefined') return 1;
+  try {
+    const customMembers = JSON.parse(localStorage.getItem('teamflow_custom_members') || '[]');
+    const registeredUsers = JSON.parse(localStorage.getItem('teamflow_registered_users') || '[]');
+
+    const memberMap = new Map();
+
+    if (activeUser && activeUser.email) {
+      memberMap.set(String(activeUser.email).toLowerCase(), activeUser);
+    }
+    registeredUsers.forEach(u => {
+      if (u && u.email) {
+        memberMap.set(String(u.email).toLowerCase(), u);
+      }
+    });
+    customMembers.forEach(m => {
+      if (m && m.email) {
+        memberMap.set(String(m.email).toLowerCase(), m);
+      }
+    });
+
+    if (fetchedMembers && fetchedMembers.length > 0) {
+      fetchedMembers.forEach(m => {
+        if (m && m.email && !m.email.includes('@abctechnologies.com')) {
+          memberMap.set(String(m.email).toLowerCase(), m);
+        }
+      });
+    }
+
+    if (memberMap.size > 0) {
+      return memberMap.size;
+    }
+  } catch (e) {}
+
+  return 1;
+};
+
 export default function MainDashboard({ onOpenCreateTask }) {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -13,7 +51,7 @@ export default function MainDashboard({ onOpenCreateTask }) {
     projects: { total: 12, active: 8, completed: 3 },
     tasks: { total: 120, completed: 45, in_progress: 35, pending: 32, overdue: 8 },
     due_soon: 8,
-    team_online: 14
+    team_online: 1
   });
 
   const getInitialTodos = () => {
@@ -50,9 +88,27 @@ export default function MainDashboard({ onOpenCreateTask }) {
   ]);
 
   useEffect(() => {
+    let currentTeamCount = getMergedTeamCount(user, []);
+    setStats(prev => ({ ...prev, team_online: currentTeamCount }));
+
+    api.get('/team/members')
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) {
+          const count = getMergedTeamCount(user, res.data);
+          currentTeamCount = count;
+          setStats(prev => ({ ...prev, team_online: count }));
+        }
+      })
+      .catch(() => {});
+
     api.get('/reports/dashboard-stats')
       .then(res => {
-        if (res.data) setStats(res.data);
+        if (res.data) {
+          setStats(prev => ({
+            ...res.data,
+            team_online: currentTeamCount
+          }));
+        }
       })
       .catch(() => {});
 

@@ -79,7 +79,7 @@ export async function getDashboardStats(req, res) {
         overdue: overdueTasks.count || 8
       },
       due_soon: dueSoon.count || 8,
-      team_online: teamOnline.count || 14,
+      team_online: teamOnline.count || 1,
       team_workload: calculatedWorkload
     });
   } catch (err) {
