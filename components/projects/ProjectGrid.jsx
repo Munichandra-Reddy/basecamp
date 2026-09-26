@@ -3,47 +3,83 @@ import { Search, Plus, FolderKanban, Users, Calendar, ArrowRight } from 'lucide-
 import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 
+const defaultProjects = [
+  {
+    id: 1,
+    name: 'E-Commerce Website',
+    description: 'Web Development full-stack online store with payment gateway',
+    progress: 75,
+    member_count: 4,
+    due_date: 'Oct 30',
+    status: 'Active'
+  },
+  {
+    id: 2,
+    name: 'Mobile App Redesign',
+    description: 'iOS & Android native UI overhaul and onboarding flow',
+    progress: 40,
+    member_count: 5,
+    due_date: 'Nov 15',
+    status: 'Active'
+  },
+  {
+    id: 3,
+    name: 'Design System Audit',
+    description: 'Comprehensive UI audit across web and mobile tokens',
+    progress: 90,
+    member_count: 3,
+    due_date: 'Sep 28',
+    status: 'Active'
+  }
+];
+
+const loadCustomProjects = () => {
+  if (typeof window === 'undefined') return [];
+  try {
+    return JSON.parse(localStorage.getItem('teamflow_custom_projects') || '[]');
+  } catch (e) {
+    return [];
+  }
+};
+
+const getMergedProjects = (fetched = []) => {
+  const custom = loadCustomProjects();
+  const map = new Map();
+
+  custom.forEach(p => map.set(String(p.id), p));
+  fetched.forEach(p => map.set(String(p.id), p));
+  defaultProjects.forEach(p => {
+    if (!map.has(String(p.id))) {
+      map.set(String(p.id), p);
+    }
+  });
+
+  return Array.from(map.values());
+};
+
 export default function ProjectGrid({ onOpenNewProject }) {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      name: 'E-Commerce Website',
-      description: 'Web Development full-stack online store with payment gateway',
-      progress: 75,
-      member_count: 4,
-      due_date: 'Oct 30',
-      status: 'Active'
-    },
-    {
-      id: 2,
-      name: 'Mobile App Redesign',
-      description: 'iOS & Android native UI overhaul and onboarding flow',
-      progress: 40,
-      member_count: 5,
-      due_date: 'Nov 15',
-      status: 'Active'
-    },
-    {
-      id: 3,
-      name: 'Design System Audit',
-      description: 'Comprehensive UI audit across web and mobile tokens',
-      progress: 90,
-      member_count: 3,
-      due_date: 'Sep 28',
-      status: 'Active'
-    }
-  ]);
-
+  const [projects, setProjects] = useState(() => getMergedProjects([]));
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     api.get('/projects')
       .then(res => {
-        if (res.data && res.data.length > 0) setProjects(res.data);
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setProjects(getMergedProjects(res.data));
+        }
       })
       .catch(() => {});
+
+    const handleProjectCreated = () => {
+      setProjects(getMergedProjects([]));
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('project-created', handleProjectCreated);
+      return () => window.removeEventListener('project-created', handleProjectCreated);
+    }
   }, []);
 
   const filteredProjects = projects.filter(p => {
@@ -62,7 +98,7 @@ export default function ProjectGrid({ onOpenNewProject }) {
 
         <button
           onClick={onOpenNewProject}
-          className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition shadow-md shadow-blue-500/20 flex items-center gap-2 self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition shadow-md shadow-blue-500/20 flex items-center gap-2 self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>+ New Project</span>
@@ -75,7 +111,7 @@ export default function ProjectGrid({ onOpenNewProject }) {
             <button
               key={tab}
               onClick={() => setFilter(tab)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                 filter === tab
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-slate-600 hover:bg-slate-100'
@@ -127,12 +163,12 @@ export default function ProjectGrid({ onOpenNewProject }) {
               <div>
                 <div className="flex justify-between text-xs font-bold mb-1.5">
                   <span className="text-slate-600">Progress</span>
-                  <span className="text-blue-600">{p.progress}%</span>
+                  <span className="text-blue-600">{p.progress || 0}%</span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                   <div
                     className="bg-blue-600 h-full rounded-full transition-all duration-500"
-                    style={{ width: `${p.progress}%` }}
+                    style={{ width: `${p.progress || 0}%` }}
                   ></div>
                 </div>
               </div>
@@ -140,7 +176,7 @@ export default function ProjectGrid({ onOpenNewProject }) {
               <div className="flex items-center justify-between text-xs text-slate-500 font-semibold pt-1">
                 <div className="flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{p.member_count || 4} Members</span>
+                  <span>{p.member_count || 1} Members</span>
                 </div>
                 <span className="text-blue-600 font-bold hover:underline">Open Project →</span>
               </div>

@@ -4,6 +4,17 @@ import { useWorkspace } from '../../context/WorkspaceContext';
 import api from '../../services/api';
 import { FolderKanban, Calendar, FileText } from 'lucide-react';
 
+const saveCustomProject = (proj) => {
+  if (typeof window === 'undefined') return;
+  try {
+    const existing = JSON.parse(localStorage.getItem('teamflow_custom_projects') || '[]');
+    const updated = [proj, ...existing.filter(p => String(p.id) !== String(proj.id))];
+    localStorage.setItem('teamflow_custom_projects', JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to save project to localStorage:', e);
+  }
+};
+
 export default function NewProjectModal({ isOpen, onClose, onProjectCreated }) {
   const { activeWorkspace } = useWorkspace();
   const [name, setName] = useState('');
@@ -13,22 +24,57 @@ export default function NewProjectModal({ isOpen, onClose, onProjectCreated }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) return;
+    if (!name || !name.trim()) return;
     setLoading(true);
+
+    const rawName = name.trim();
+    const rawDesc = description.trim();
+    const formattedDueDate = dueDate ? (dueDate.length === 10 ? new Date(dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : dueDate) : 'Oct 30';
+
+    const localProject = {
+      id: Date.now(),
+      name: rawName,
+      description: rawDesc || 'New project initiative',
+      progress: 0,
+      member_count: 1,
+      due_date: formattedDueDate,
+      status: 'Active',
+      workspace_id: activeWorkspace?.id || 1
+    };
+
+    let createdProject = localProject;
+
     try {
       const res = await api.post('/projects', {
         workspace_id: activeWorkspace?.id || 1,
-        name,
-        description,
+        name: rawName,
+        description: rawDesc,
         due_date: dueDate
       });
-      setLoading(false);
-      setName('');
-      setDescription('');
-      onClose();
-      if (onProjectCreated) onProjectCreated(res.data);
+      if (res.data) {
+        createdProject = {
+          ...localProject,
+          ...res.data,
+          due_date: res.data.due_date || formattedDueDate
+        };
+      }
     } catch (err) {
-      setLoading(false);
+      // Offline / serverless fallback
+    }
+
+    saveCustomProject(createdProject);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('project-created', { detail: createdProject }));
+    }
+
+    setLoading(false);
+    setName('');
+    setDescription('');
+    onClose();
+
+    if (onProjectCreated) {
+      onProjectCreated(createdProject);
     }
   };
 
