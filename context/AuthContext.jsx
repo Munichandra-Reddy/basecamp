@@ -95,7 +95,7 @@ export function AuthProvider({ children }) {
       id: match.id || Date.now(),
       name: match.name || 'muni',
       email: match.email,
-      avatar_url: match.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(match.name || 'muni')}`,
+      avatar_url: match.avatar_url || '',
       role: match.role || 'Workspace Admin',
       status: 'Active'
     };
@@ -148,7 +148,7 @@ export function AuthProvider({ children }) {
       name: cleanName,
       email: cleanEmail,
       password: password,
-      avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(cleanName)}`,
+      avatar_url: '',
       role: 'Workspace Admin',
       status: 'Active'
     };

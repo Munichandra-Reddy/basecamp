@@ -131,7 +131,9 @@ export default function CommunicationView() {
 
             {channelMessages.map(msg => (
               <div key={msg.id} className="flex items-start gap-3 group">
-                <img src={msg.senderAvatar} alt="" className="w-9 h-9 rounded-full object-cover border border-slate-200 shrink-0" />
+                <div className="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200">
+                  {msg.sender.charAt(0).toUpperCase()}
+                </div>
                 <div className="space-y-1 max-w-xl">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-slate-900 text-xs">{msg.sender}</span>

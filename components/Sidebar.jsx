@@ -275,11 +275,9 @@ export default function Sidebar() {
       {/* User Footer Profile & Logout */}
       <div className="p-3 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <img
-            src={userAvatar}
-            alt={userName}
-            className="w-8 h-8 rounded-full border border-blue-500/40 object-cover"
-          />
+          <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center border border-blue-400/40 shrink-0">
+            {userName.charAt(0).toUpperCase()}
+          </div>
           <div className="text-left leading-tight truncate">
             <div className="text-xs font-semibold text-white truncate">{userName}</div>
             <div className="text-[10px] text-slate-400 truncate">{userRole}</div>

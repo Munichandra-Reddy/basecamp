@@ -161,7 +161,9 @@ export default function TasksView() {
                 {/* Timer Control & Assignee */}
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
                   <div className="flex items-center gap-2">
-                    <img src={task.assigneeAvatar} alt="" className="w-5 h-5 rounded-full object-cover" />
+                    <div className="w-5 h-5 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                      {task.assigneeName ? task.assigneeName.charAt(0).toUpperCase() : 'U'}
+                    </div>
                     <span className="font-medium text-slate-700">{task.assigneeName}</span>
                   </div>
 

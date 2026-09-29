@@ -65,7 +65,9 @@ export default function TeamWorkloadView() {
                   <tr key={m.id} className="hover:bg-slate-50 transition">
                     <td className="p-3">
                       <div className="flex items-center gap-2.5">
-                        <img src={m.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+                        <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                          {m.name.charAt(0).toUpperCase()}
+                        </div>
                         <div>
                           <div className="font-bold text-slate-900">{m.name}</div>
                           <div className="text-[10px] text-slate-500">{m.department}</div>
