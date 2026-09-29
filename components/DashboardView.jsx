@@ -11,16 +11,16 @@ import {
   Flame,
   AlertCircle,
   ArrowRight,
-  Sparkles,
   DollarSign,
-  Briefcase
+  Briefcase,
+  ShieldAlert
 } from 'lucide-react';
 
 export default function DashboardView() {
   const { user } = useAuth();
   const { projects, tasks, teamMembers, meetings, setActiveTab, setSelectedTaskId, setSelectedProjectId } = useWorkOrbit();
 
-  const userName = user?.name ? user.name.split(' ')[0] : 'muni';
+  const userName = (user && typeof user.name === 'string' && user.name.trim()) ? user.name.split(' ')[0] : 'muni';
 
   // Metrics calculation
   const totalProjects = projects.length;
@@ -41,7 +41,7 @@ export default function DashboardView() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/30 text-blue-300 border border-blue-400/30">
-                WorkOrbit 2026 Dashboard
+                WorkOrbit Dashboard
               </span>
               <span className="text-slate-400 text-xs">ABC Technologies Workspace</span>
             </div>
@@ -56,8 +56,8 @@ export default function DashboardView() {
               onClick={() => setActiveTab('project-insights')}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-lg shadow-blue-600/30"
             >
-              <Sparkles className="w-4 h-4 text-blue-200" />
-              <span>Run AI Risk Analysis</span>
+              <ShieldAlert className="w-4 h-4 text-blue-200" />
+              <span>Run Risk Analysis</span>
             </button>
           </div>
         </div>

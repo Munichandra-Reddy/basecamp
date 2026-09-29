@@ -27,13 +27,11 @@ import {
   Boxes,
   Webhook,
   Bot,
-  Sparkles,
   Mic,
   Settings,
   Star,
   PlusCircle,
   Search,
-  Bell,
   ChevronDown,
   Building2,
   ShieldAlert,
@@ -43,7 +41,7 @@ import {
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
-  const { activeTab, setActiveTab, projects, toggleProjectFavorite, setIsSearchOpen, setIsQuickTaskOpen, notifications } = useWorkOrbit();
+  const { activeTab, setActiveTab, projects, setIsSearchOpen, setIsQuickTaskOpen, notifications } = useWorkOrbit();
   const { activeWorkspace, workspaces, switchWorkspace } = useWorkspace();
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = React.useState(false);
 
@@ -119,11 +117,11 @@ export default function Sidebar() {
       ]
     },
     {
-      groupLabel: 'WORKORBIT AI',
+      groupLabel: 'INTELLIGENCE & RISK',
       items: [
-        { id: 'ai-assistant', label: 'AI Assistant', icon: Bot, badge: 'Pro' },
-        { id: 'project-insights', label: 'AI Risk Intelligence', icon: Sparkles, badge: '3 Risks' },
-        { id: 'meeting-ai', label: 'AI Meeting Transcriber', icon: Mic, badge: null }
+        { id: 'ai-assistant', label: 'Assistant', icon: Bot, badge: null },
+        { id: 'project-insights', label: 'Risk Intelligence', icon: ShieldAlert, badge: '3 Risks' },
+        { id: 'meeting-ai', label: 'Meeting Transcriber', icon: Mic, badge: null }
       ]
     },
     {
@@ -147,7 +145,6 @@ export default function Sidebar() {
             </div>
             <div>
               <span className="font-bold text-white tracking-wide text-lg">WorkOrbit</span>
-              <span className="text-[10px] text-blue-400 block -mt-1 font-mono uppercase font-semibold">Basecamp 2026+</span>
             </div>
           </div>
           <button
@@ -260,7 +257,7 @@ export default function Sidebar() {
                       <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded-full ${
                         item.badge === 'Overload Alert' || item.badge === '3 Risks'
                           ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                          : item.badge === 'Live' || item.badge === 'Pro'
+                          : item.badge === 'Live'
                           ? 'bg-blue-500/20 text-blue-300'
                           : 'bg-slate-800 text-slate-300'
                       }`}>

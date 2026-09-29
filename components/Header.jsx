@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
-import { Search, Bell, Sparkles, Plus, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Search, Bell, Plus, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 export default function Header() {
   const { activeTab, setIsSearchOpen, setIsQuickTaskOpen, notifications, markNotificationsRead } = useWorkOrbit();
@@ -10,7 +10,7 @@ export default function Header() {
 
   const getTitle = () => {
     const titles = {
-      'dashboard': '🏠 Workspace Dashboard',
+      'dashboard': 'Workspace Dashboard',
       'my-tasks': '📌 My Active Tasks',
       'my-calendar': '📅 Calendar Schedule',
       'inbox': '📥 Notifications & Inbox',
@@ -33,9 +33,9 @@ export default function Header() {
       'workflows': '⚡ Automation Engine',
       'integrations': '🔌 Integrations Hub',
       'webhooks': '🔗 Developer Webhooks',
-      'ai-assistant': '🤖 WorkOrbit AI Assistant',
-      'project-insights': '🧠 AI Risk Intelligence',
-      'meeting-ai': '🎙️ AI Meeting Transcriber',
+      'ai-assistant': 'WorkOrbit Assistant',
+      'project-insights': 'Risk Intelligence',
+      'meeting-ai': 'Meeting Transcriber',
       'client-portal': '👨‍💼 Client Portal',
       'forms': '📝 Forms & Bug Tracker',
       'settings': '⚙️ Workspace Settings'
@@ -47,9 +47,6 @@ export default function Header() {
     <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 shadow-sm z-20">
       <div className="flex items-center gap-3">
         <h1 className="text-lg font-bold text-slate-900 tracking-tight">{getTitle()}</h1>
-        <span className="hidden md:inline-block px-2.5 py-0.5 text-[11px] font-medium rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-          Basecamp 2026 Edition
-        </span>
       </div>
 
       <div className="flex items-center gap-3">
@@ -63,7 +60,7 @@ export default function Header() {
           <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white rounded border border-slate-300 text-slate-400">Ctrl+K</kbd>
         </button>
 
-        {/* AI Assistant Quick Trigger */}
+        {/* Quick Task Button */}
         <button
           onClick={() => setIsQuickTaskOpen(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-sm transition"

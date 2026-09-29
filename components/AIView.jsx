@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
-import { Bot, Sparkles, AlertTriangle, CheckCircle2, MessageSquare, Send, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, MessageSquare, Send, ArrowRight, Search, FileText } from 'lucide-react';
 
 export default function AIView() {
   const { projects, teamMembers, tasks } = useWorkOrbit();
@@ -21,7 +21,7 @@ export default function AIView() {
 
     if (q.toLowerCase().includes('delaying') || q.toLowerCase().includes('mobile banking') || q.toLowerCase().includes('risk')) {
       setAiResponse({
-        title: '🤖 PROJECT RISK ANALYSIS: Mobile Banking App',
+        title: 'PROJECT RISK ANALYSIS: Mobile Banking App',
         status: 'HIGH RISK DETECTED',
         findings: [
           '1. Payment API integration is 2 days overdue (Assignee: Rahul Kumar).',
@@ -36,7 +36,7 @@ export default function AIView() {
       });
     } else if (q.toLowerCase().includes('overloaded')) {
       setAiResponse({
-        title: '🤖 WORKLOAD INTELLIGENCE REPORT',
+        title: 'WORKLOAD INTELLIGENCE REPORT',
         status: 'RESOURCE IMBALANCE',
         findings: [
           '• Priya Sharma is overloaded at 94% capacity (14 active tasks, 42.0 hours logged).',
@@ -48,7 +48,7 @@ export default function AIView() {
       });
     } else {
       setAiResponse({
-        title: '🤖 WORKORBIT AI SUMMARY & ACTION ITEMS',
+        title: 'WORKORBIT SUMMARY & ACTION ITEMS',
         status: 'TASKS CREATED SUCCESSFULLY',
         findings: [
           '• Task Created: "Fix Login Button Bug" -> Assigned to Rahul Kumar (Due: Friday)'
@@ -66,24 +66,19 @@ export default function AIView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Bot className="w-5 h-5 text-indigo-600" />
-            WorkOrbit AI Assistant & Risk Intelligence
+            <ShieldAlert className="w-5 h-5 text-indigo-600" />
+            WorkOrbit Risk Intelligence & Assistant
           </h2>
-          <p className="text-xs text-slate-500">Basecamp 5 companion AI that understands project context, workload bottlenecks, and risk detection</p>
+          <p className="text-xs text-slate-500">Automated assistant that analyzes project context, workload bottlenecks, and risk detection</p>
         </div>
-
-        <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-          Antigravity AI Engine 2026
-        </span>
       </div>
 
-      {/* AI Risk Radar Alert Banner */}
+      {/* Risk Radar Alert Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-amber-400" />
-            <span className="font-bold text-sm tracking-wide">Automated AI Project Risk Detection</span>
+            <span className="font-bold text-sm tracking-wide">Automated Project Risk Detection</span>
           </div>
           <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-500/30 text-rose-300 border border-rose-500/30">
             3 Risks Detected
@@ -106,17 +101,17 @@ export default function AIView() {
         </div>
       </div>
 
-      {/* Interactive AI Query Box & Prompt Buttons */}
+      {/* Interactive Query Box & Prompt Buttons */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
         <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-          <Cpu className="w-4 h-4 text-indigo-600" />
-          Ask WorkOrbit AI Anything
+          <Search className="w-4 h-4 text-indigo-600" />
+          Ask WorkOrbit Assistant Anything
         </h3>
 
         <div className="flex items-center gap-2">
           <input
             type="text"
-            placeholder="Ask AI e.g., 'What is delaying the project?' or 'Who is overloaded?'"
+            placeholder="Ask e.g., 'What is delaying the project?' or 'Who is overloaded?'"
             value={aiQuery}
             onChange={(e) => setAiQuery(e.target.value)}
             className="flex-1 text-xs p-3 rounded-xl border border-slate-300 outline-none focus:border-indigo-500 font-medium"
@@ -125,7 +120,7 @@ export default function AIView() {
             onClick={() => handleRunAI()}
             className="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5"
           >
-            <Sparkles className="w-4 h-4" /> Run AI Query
+            <Search className="w-4 h-4" /> Run Query
           </button>
         </div>
 
@@ -147,7 +142,7 @@ export default function AIView() {
         </div>
       </div>
 
-      {/* AI Response Card */}
+      {/* Response Card */}
       {aiResponse && (
         <div className="bg-white rounded-2xl p-6 border border-indigo-200 shadow-md space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-indigo-100">
