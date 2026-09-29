@@ -1,9 +1,9 @@
 import React from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
-import { Users, BarChart3, AlertTriangle, CheckCircle2, Clock, MapPin, Mail, Sparkles } from 'lucide-react';
+import { Users, BarChart3, AlertTriangle, CheckCircle2, Clock, MapPin, Mail, ArrowLeft } from 'lucide-react';
 
 export default function TeamWorkloadView() {
-  const { teamMembers } = useWorkOrbit();
+  const { teamMembers, goBack } = useWorkOrbit();
 
   const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 
@@ -11,12 +11,22 @@ export default function TeamWorkloadView() {
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
-            Employee Workload & Capacity Planner
-          </h2>
-          <p className="text-xs text-slate-500">Resource allocation, daily capacity heatmaps, and overload detection for managers</p>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={goBack}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 shadow-sm transition"
+            title="Go Back"
+          >
+            <ArrowLeft className="w-4 h-4 text-slate-700" />
+            <span>Back</span>
+          </button>
+          <div>
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-blue-600" />
+              Employee Workload & Capacity Planner
+            </h2>
+            <p className="text-xs text-slate-500">Resource allocation, daily capacity heatmaps, and overload detection for managers</p>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

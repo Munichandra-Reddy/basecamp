@@ -15,7 +15,9 @@ import {
 const WorkOrbitContext = createContext();
 
 export function WorkOrbitProvider({ children }) {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTabState] = useState('dashboard');
+  const [navHistory, setNavHistory] = useState(['dashboard']);
+
   const [projects, setProjects] = useState(initialProjects);
   const [tasks, setTasks] = useState(initialTasks);
   const [teamMembers, setTeamMembers] = useState(initialTeamMembers);
@@ -41,6 +43,26 @@ export function WorkOrbitProvider({ children }) {
     { id: 'notif-2', title: 'Project Risk Detected', message: 'Mobile Banking App risk escalated to High', type: 'warning', read: false, time: '30m ago' },
     { id: 'notif-3', title: 'New Comment', message: 'Karthik mentioned you in E-Commerce sprint', type: 'info', read: true, time: '2h ago' }
   ]);
+
+  // Navigation History Stack (Screening Back Support)
+  const setActiveTab = (newTab) => {
+    if (newTab !== activeTab) {
+      setNavHistory(prev => [...prev, newTab]);
+      setActiveTabState(newTab);
+    }
+  };
+
+  const goBack = () => {
+    if (navHistory.length > 1) {
+      const updated = [...navHistory];
+      updated.pop(); // pop current tab
+      const previousTab = updated[updated.length - 1];
+      setNavHistory(updated);
+      setActiveTabState(previousTab || 'dashboard');
+    } else {
+      setActiveTabState('dashboard');
+    }
+  };
 
   // Timer Tick Interval for active task timer
   useEffect(() => {
@@ -207,6 +229,8 @@ export function WorkOrbitProvider({ children }) {
     <WorkOrbitContext.Provider value={{
       activeTab,
       setActiveTab,
+      goBack,
+      canGoBack: activeTab !== 'dashboard' || navHistory.length > 1,
       projects,
       setProjects,
       tasks,

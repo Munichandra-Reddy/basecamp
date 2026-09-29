@@ -1,9 +1,9 @@
 import React from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
-import { Search, Bell, Plus, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Search, Bell, Plus, CheckCircle2, ShieldAlert, ArrowLeft } from 'lucide-react';
 
 export default function Header() {
-  const { activeTab, setIsSearchOpen, setIsQuickTaskOpen, notifications, markNotificationsRead } = useWorkOrbit();
+  const { activeTab, goBack, canGoBack, setIsSearchOpen, setIsQuickTaskOpen, notifications, markNotificationsRead } = useWorkOrbit();
   const [showNotifDropdown, setShowNotifDropdown] = React.useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -46,6 +46,16 @@ export default function Header() {
   return (
     <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 shadow-sm z-20">
       <div className="flex items-center gap-3">
+        {canGoBack && (
+          <button
+            onClick={goBack}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 shadow-sm transition"
+            title="Go Back to Previous Screen"
+          >
+            <ArrowLeft className="w-4 h-4 text-slate-700" />
+            <span>Back</span>
+          </button>
+        )}
         <h1 className="text-lg font-bold text-slate-900 tracking-tight">{getTitle()}</h1>
       </div>
 
