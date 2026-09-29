@@ -104,7 +104,7 @@ export default function AIView() {
   const renderAssistantView = () => (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-400">
@@ -231,7 +231,7 @@ export default function AIView() {
   const renderRiskIntelligenceView = () => (
     <div className="space-y-6">
       {/* Radar Header Alert */}
-      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
@@ -375,7 +375,7 @@ export default function AIView() {
   const renderMeetingTranscriberView = () => (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300">
