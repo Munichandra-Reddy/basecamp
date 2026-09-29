@@ -79,7 +79,7 @@ export default function Sidebar() {
     {
       groupLabel: 'TEAM',
       items: [
-        { id: 'people', label: 'People', icon: Users, badge: null },
+        { id: 'people', label: 'Employees', icon: Users, badge: null },
         { id: 'teams', label: 'Teams', icon: UserCheck, badge: null },
         { id: 'workload', label: 'Workload Planner', icon: BarChart3, badge: 'Overload Alert' }
       ]

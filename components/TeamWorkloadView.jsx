@@ -48,7 +48,7 @@ export default function TeamWorkloadView() {
             <div>
               <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Users className="w-5 h-5 text-blue-600" />
-                Team Roster & Employee Directory
+                Employees Roster & Directory
               </h2>
               <p className="text-xs text-slate-500">Complete employee list, skills matrix, location, and individual task metrics</p>
             </div>
@@ -70,7 +70,7 @@ export default function TeamWorkloadView() {
             <Search className="w-4 h-4 text-slate-400 ml-2" />
             <input
               type="text"
-              placeholder="Search people by name or role..."
+              placeholder="Search employees by name or role..."
               value={peopleSearch}
               onChange={(e) => setPeopleSearch(e.target.value)}
               className="w-full text-xs bg-transparent outline-none text-slate-800 placeholder-slate-400"

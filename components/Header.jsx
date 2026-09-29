@@ -11,14 +11,14 @@ export default function Header() {
   const getTitle = () => {
     const titles = {
       'dashboard': 'Workspace Dashboard',
-      'my-tasks': '📌 My Active Tasks',
+      'my-tasks': 'My Active Tasks',
       'my-calendar': '📅 Calendar Schedule',
       'inbox': '📥 Notifications & Inbox',
       'all-projects': '📁 Projects Overview',
       'kanban': '📊 Kanban Task Board',
       'gantt': '📈 Gantt Chart Timeline',
       'roadmap': '🗺️ Product Roadmap',
-      'people': '👥 Team Roster',
+      'people': 'Employees',
       'teams': '🧑‍🤝‍🧑 Department Teams',
       'workload': '📊 Employee Workload Planner',
       'chat': '💬 Campfire Team Chat',
