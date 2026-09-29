@@ -84,7 +84,9 @@ export default function InsightsView() {
                 {teamMembers.map(m => (
                   <tr key={m.id} className="hover:bg-slate-50">
                     <td className="p-3 font-bold flex items-center gap-2">
-                      <img src={m.avatar} alt="" className="w-6 h-6 rounded-full" />
+                      <div className="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                        {m.name ? m.name.charAt(0).toUpperCase() : 'U'}
+                      </div>
                       <span>{m.name}</span>
                     </td>
                     <td className="p-3 text-slate-600">{m.department}</td>

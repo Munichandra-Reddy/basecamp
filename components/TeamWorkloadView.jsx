@@ -117,7 +117,9 @@ export default function TeamWorkloadView() {
           <div key={member.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <img src={member.avatar} alt="" className="w-12 h-12 rounded-2xl object-cover border border-slate-200" />
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white font-bold text-lg flex items-center justify-center shrink-0 border border-slate-200">
+                  {member.name.charAt(0).toUpperCase()}
+                </div>
                 <div>
                   <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                     {member.name}
