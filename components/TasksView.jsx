@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
 import {
   CheckSquare,
+  Calendar as CalendarIcon,
+  Inbox,
   Clock,
   Play,
   Pause,
@@ -14,16 +16,52 @@ import {
   MessageSquare,
   ShieldAlert,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   Layers,
-  Filter
+  Filter,
+  Bell,
+  Check,
+  Video,
+  ArrowRight
 } from 'lucide-react';
 
 export default function TasksView() {
-  const { tasks, updateTaskStatus, updateTaskPriority, toggleSubtask, toggleTimer, addTask, selectedTaskId, setSelectedTaskId } = useWorkOrbit();
+  const {
+    activeTab,
+    setActiveTab,
+    tasks,
+    updateTaskStatus,
+    updateTaskPriority,
+    toggleSubtask,
+    toggleTimer,
+    addTask,
+    selectedTaskId,
+    setSelectedTaskId,
+    notifications,
+    meetings,
+    projects
+  } = useWorkOrbit();
+
+  // Task Management Filters
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [activeTaskDrawer, setActiveTaskDrawer] = useState(selectedTaskId ? tasks.find(t => t.id === selectedTaskId) : null);
+
+  // Inbox Filters & Local State
+  const [inboxFilter, setInboxFilter] = useState('All'); // All, Unread, Urgent, Info
+  const [localNotifs, setLocalNotifs] = useState(notifications);
+
+  useEffect(() => {
+    setLocalNotifs(notifications);
+  }, [notifications]);
+
+  useEffect(() => {
+    if (selectedTaskId) {
+      const match = tasks.find(t => t.id === selectedTaskId);
+      if (match) setActiveTaskDrawer(match);
+    }
+  }, [selectedTaskId, tasks]);
 
   const filteredTasks = tasks.filter(t => {
     const matchesPriority = priorityFilter === 'All' || t.priority === priorityFilter;
@@ -33,6 +71,291 @@ export default function TasksView() {
 
   const activeTask = activeTaskDrawer || tasks[0];
 
+  const handleMarkRead = (id) => {
+    setLocalNotifs(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const handleClearAllNotifs = () => {
+    setLocalNotifs(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  // ----------------------------------------------------
+  // 1. RENDER MY CALENDAR VIEW
+  // ----------------------------------------------------
+  if (activeTab === 'my-calendar') {
+    const days = [
+      { date: '2026-09-28', dayName: 'MON', label: 'Sep 28', isToday: false },
+      { date: '2026-09-29', dayName: 'TUE', label: 'Sep 29', isToday: true },
+      { date: '2026-09-30', dayName: 'WED', label: 'Sep 30', isToday: false },
+      { date: '2026-10-01', dayName: 'THU', label: 'Oct 01', isToday: false },
+      { date: '2026-10-02', dayName: 'FRI', label: 'Oct 02', isToday: false },
+      { date: '2026-10-03', dayName: 'SAT', label: 'Oct 03', isToday: false },
+      { date: '2026-10-04', dayName: 'SUN', label: 'Oct 04', isToday: false }
+    ];
+
+    return (
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5 text-blue-600" />
+              Calendar Schedule & Milestones
+            </h2>
+            <p className="text-xs text-slate-500">Interactive weekly calendar schedule with task due dates and meeting sync</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-xs bg-white p-1 rounded-xl border border-slate-200 font-semibold">
+              <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg">September 2026</span>
+              <span className="px-2 py-1 text-slate-500 font-mono">Week 39</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Weekly Calendar Grid */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+            {days.map((d) => {
+              const dayTasks = tasks.filter(t => t.dueDate === d.date);
+              const dayMeetings = meetings.filter(m => d.date === '2026-09-29'); // Today meetings
+
+              return (
+                <div
+                  key={d.date}
+                  className={`p-3 rounded-2xl border min-h-[260px] flex flex-col space-y-2 transition ${
+                    d.isToday
+                      ? 'bg-blue-50/50 border-blue-400 shadow-sm ring-1 ring-blue-300'
+                      : 'bg-slate-50/50 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {/* Day Header */}
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200/80">
+                    <span className="text-[10px] font-bold text-slate-400">{d.dayName}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                      d.isToday ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-800'
+                    }`}>
+                      {d.label}
+                    </span>
+                  </div>
+
+                  {/* Schedule Items */}
+                  <div className="flex-1 space-y-2 overflow-y-auto custom-scrollbar">
+                    {/* Meetings */}
+                    {d.isToday && dayMeetings.map(mtg => (
+                      <div key={mtg.id} className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] space-y-1">
+                        <div className="font-bold font-mono text-[10px] text-indigo-600 flex items-center gap-1">
+                          <Video className="w-3 h-3 text-indigo-600" />
+                          <span>{mtg.time}</span>
+                        </div>
+                        <div className="font-bold line-clamp-1">{mtg.title}</div>
+                      </div>
+                    ))}
+
+                    {/* Tasks */}
+                    {dayTasks.map(t => (
+                      <div
+                        key={t.id}
+                        onClick={() => {
+                          setSelectedTaskId(t.id);
+                          setActiveTab('my-tasks');
+                        }}
+                        className="p-2 rounded-xl bg-white border border-slate-200 shadow-xs hover:border-blue-400 transition cursor-pointer text-[11px] space-y-1"
+                      >
+                        <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
+                          t.priority === 'Urgent' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {t.priority}
+                        </span>
+                        <div className="font-bold text-slate-900 line-clamp-2">{t.title}</div>
+                        <div className="text-[10px] text-slate-500 font-mono">Est: {t.estimatedHours}h</div>
+                      </div>
+                    ))}
+
+                    {dayTasks.length === 0 && (!d.isToday || dayMeetings.length === 0) && (
+                      <div className="h-full flex items-center justify-center text-[10px] text-slate-400 italic">
+                        No events
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Portfolio Deadlines Summary */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <Clock className="w-4 h-4 text-blue-600" />
+            Upcoming Project Delivery Milestones
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {projects.map(p => (
+              <div key={p.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-xs">{p.name}</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    p.health === 'Healthy' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                  }`}>
+                    {p.health}
+                  </span>
+                </div>
+                <div className="text-xs text-slate-600 flex items-center justify-between pt-1 border-t border-slate-200">
+                  <span className="text-[11px] text-slate-400">Deadline:</span>
+                  <span className="font-mono font-bold text-slate-800">{p.deadline}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------
+  // 2. RENDER INBOX & NOTIFICATIONS VIEW
+  // ----------------------------------------------------
+  if (activeTab === 'inbox') {
+    const filteredNotifs = localNotifs.filter(n => {
+      if (inboxFilter === 'Unread') return !n.read;
+      if (inboxFilter === 'Urgent') return n.type === 'urgent';
+      return true;
+    });
+
+    const unreadCount = localNotifs.filter(n => !n.read).length;
+
+    return (
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <Inbox className="w-5 h-5 text-blue-600" />
+              Notifications & Activity Inbox
+            </h2>
+            <p className="text-xs text-slate-500">Real-time team mentions, overdue task warnings, and automated risk alerts</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleClearAllNotifs}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition border border-slate-200"
+            >
+              <Check className="w-4 h-4 text-emerald-600" />
+              <span>Mark All as Read</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Inbox Quick Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div className="text-xs font-medium text-slate-500">Total Notifications</div>
+              <div className="text-2xl font-black text-slate-900 font-mono mt-0.5">{localNotifs.length}</div>
+            </div>
+            <div className="p-3 rounded-xl bg-blue-50 text-blue-600">
+              <Bell className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div className="text-xs font-medium text-slate-500">Unread Items</div>
+              <div className="text-2xl font-black text-blue-600 font-mono mt-0.5">{unreadCount}</div>
+            </div>
+            <div className="p-3 rounded-xl bg-blue-50 text-blue-600">
+              <Inbox className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <div className="text-xs font-medium text-slate-500">Urgent Alerts</div>
+              <div className="text-2xl font-black text-rose-600 font-mono mt-0.5">
+                {localNotifs.filter(n => n.type === 'urgent').length}
+              </div>
+            </div>
+            <div className="p-3 rounded-xl bg-rose-50 text-rose-600">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Bar & List */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm space-y-4 p-6">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2 text-xs font-semibold">
+              <button
+                onClick={() => setInboxFilter('All')}
+                className={`px-3 py-1.5 rounded-lg transition ${inboxFilter === 'All' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}
+              >
+                All ({localNotifs.length})
+              </button>
+              <button
+                onClick={() => setInboxFilter('Unread')}
+                className={`px-3 py-1.5 rounded-lg transition ${inboxFilter === 'Unread' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}
+              >
+                Unread ({unreadCount})
+              </button>
+              <button
+                onClick={() => setInboxFilter('Urgent')}
+                className={`px-3 py-1.5 rounded-lg transition ${inboxFilter === 'Urgent' ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-700'}`}
+              >
+                Urgent Alerts
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {filteredNotifs.map(n => (
+              <div
+                key={n.id}
+                onClick={() => handleMarkRead(n.id)}
+                className={`p-4 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                  !n.read
+                    ? 'bg-blue-50/60 border-blue-200 font-semibold'
+                    : 'bg-slate-50/50 border-slate-200 opacity-80'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${
+                    n.type === 'urgent' ? 'bg-rose-100 text-rose-700' : n.type === 'warning' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
+                  }`}>
+                    {n.type === 'urgent' ? <AlertCircle className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                      {n.title}
+                      {!n.read && (
+                        <span className="w-2 h-2 rounded-full bg-blue-600 inline-block"></span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-600 mt-0.5">{n.message}</p>
+                    <span className="text-[10px] text-slate-400 font-mono mt-1 block">{n.time}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {!n.read && (
+                    <span className="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded border border-blue-200">
+                      Mark Read
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------
+  // 3. DEFAULT: RENDER MY TASKS MANAGEMENT VIEW
+  // ----------------------------------------------------
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Top Header */}
