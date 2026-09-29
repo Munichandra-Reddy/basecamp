@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { WorkOrbitProvider, useWorkOrbit } from '../context/WorkOrbitContext';
 import { useAuth } from '../context/AuthContext';
 import AuthView from '../components/AuthView';
@@ -93,6 +93,20 @@ function MainAppContent() {
 }
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-slate-300 text-xs font-mono">
+        Loading WorkOrbit 2026...
+      </div>
+    );
+  }
+
   return (
     <WorkOrbitProvider>
       <MainAppContent />

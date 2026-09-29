@@ -50,9 +50,9 @@ export default function Sidebar() {
   const unreadNotifCount = notifications.filter(n => !n.read).length;
   const favoriteProjects = projects.filter(p => p.favorite);
 
-  const userAvatar = user?.avatar_url || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80';
-  const userName = user?.name || 'Karthik Raja';
-  const userRole = user?.role || 'Lead PM & Admin';
+  const userAvatar = (user && typeof user.avatar_url === 'string') ? user.avatar_url : 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80';
+  const userName = (user && typeof user.name === 'string') ? user.name : 'muni';
+  const userRole = (user && typeof user.role === 'string') ? user.role : 'Workspace Admin';
 
   const navCategories = [
     {

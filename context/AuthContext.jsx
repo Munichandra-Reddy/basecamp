@@ -30,12 +30,19 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const isLoggedOut = localStorage.getItem('teamflow_logged_out') === 'true';
-      if (!isLoggedOut) {
-        const savedUser = localStorage.getItem('teamflow_user');
-        const savedToken = localStorage.getItem('teamflow_token');
-        if (savedUser) setUser(JSON.parse(savedUser));
-        if (savedToken) setToken(savedToken);
+      try {
+        const isLoggedOut = localStorage.getItem('teamflow_logged_out') === 'true';
+        if (!isLoggedOut) {
+          const savedUser = localStorage.getItem('teamflow_user');
+          const savedToken = localStorage.getItem('teamflow_token');
+          if (savedUser && savedUser !== 'undefined') {
+            setUser(JSON.parse(savedUser));
+          }
+          if (savedToken) setToken(savedToken);
+        }
+      } catch (e) {
+        console.error('Failed to parse saved user:', e);
+        localStorage.removeItem('teamflow_user');
       }
     }
   }, []);
