@@ -35,18 +35,18 @@ export default function DashboardView() {
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Welcome Banner with Executive Summary */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
+      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/30 text-blue-300 border border-blue-400/30">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/20 text-white border border-white/30">
                 WorkOrbit Dashboard
               </span>
-              <span className="text-slate-400 text-xs">ABC Technologies Workspace</span>
+              <span className="text-sky-100 text-xs">ABC Technologies Workspace</span>
             </div>
             <h2 className="text-2xl font-black text-white">Welcome back, {userName}!</h2>
-            <p className="text-slate-300 text-xs mt-1 max-w-xl">
+            <p className="text-sky-100 text-xs mt-1 max-w-xl">
               Here is your project health overview, team workload metrics, and priority task radar for today.
             </p>
           </div>
@@ -54,42 +54,42 @@ export default function DashboardView() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTab('project-insights')}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-lg shadow-blue-600/30"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-blue-700 hover:bg-sky-50 font-bold text-xs transition shadow-lg"
             >
-              <ShieldAlert className="w-4 h-4 text-blue-200" />
+              <ShieldAlert className="w-4 h-4 text-blue-600" />
               <span>Run Risk Analysis</span>
             </button>
           </div>
         </div>
 
         {/* Quick KPI Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-800/80">
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400 font-medium">Active Projects</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-sky-300/30">
+          <div className="bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/20">
+            <div className="text-[11px] text-sky-100 font-medium">Active Projects</div>
             <div className="text-xl font-bold text-white mt-1 flex items-baseline justify-between">
               <span>{totalProjects}</span>
-              <span className="text-xs text-emerald-400 font-normal">🟢 {healthyProjectsCount} Healthy</span>
+              <span className="text-xs text-emerald-300 font-bold">🟢 {healthyProjectsCount} Healthy</span>
             </div>
           </div>
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400 font-medium">Projects at Risk</div>
-            <div className="text-xl font-bold text-amber-400 mt-1 flex items-baseline justify-between">
+          <div className="bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/20">
+            <div className="text-[11px] text-sky-100 font-medium">Projects at Risk</div>
+            <div className="text-xl font-bold text-amber-200 mt-1 flex items-baseline justify-between">
               <span>{atRiskProjectsCount + delayedProjectsCount}</span>
-              <span className="text-xs text-rose-400 font-normal">🔴 {delayedProjectsCount} Delayed</span>
+              <span className="text-xs text-rose-200 font-bold">🔴 {delayedProjectsCount} Delayed</span>
             </div>
           </div>
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400 font-medium">Overdue & Blocked Tasks</div>
-            <div className="text-xl font-bold text-rose-400 mt-1 flex items-baseline justify-between">
+          <div className="bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/20">
+            <div className="text-[11px] text-sky-100 font-medium">Overdue & Blocked Tasks</div>
+            <div className="text-xl font-bold text-rose-200 mt-1 flex items-baseline justify-between">
               <span>{overdueTasks.length}</span>
-              <span className="text-xs text-slate-400 font-normal">Action Required</span>
+              <span className="text-xs text-sky-100 font-normal">Action Required</span>
             </div>
           </div>
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400 font-medium">Total Portfolio Profit</div>
-            <div className="text-xl font-bold text-emerald-400 mt-1 flex items-baseline justify-between">
+          <div className="bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/20">
+            <div className="text-[11px] text-sky-100 font-medium">Total Portfolio Profit</div>
+            <div className="text-xl font-bold text-emerald-300 mt-1 flex items-baseline justify-between">
               <span>₹12,45,000</span>
-              <span className="text-xs text-emerald-400 font-normal">Margin 36%</span>
+              <span className="text-xs text-emerald-300 font-bold">Margin 36%</span>
             </div>
           </div>
         </div>

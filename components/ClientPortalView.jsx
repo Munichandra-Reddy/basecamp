@@ -149,7 +149,7 @@ export default function ClientPortalView() {
   const renderClientPortalView = () => (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-blue-400">
@@ -292,7 +292,7 @@ export default function ClientPortalView() {
   const renderFormsView = () => (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-400">
@@ -457,7 +457,7 @@ export default function ClientPortalView() {
   const renderSettingsView = () => (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl space-y-4">
+      <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-sky-600 rounded-2xl p-6 text-white shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
