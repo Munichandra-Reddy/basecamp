@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
 import {
   FolderKanban,
@@ -20,8 +20,24 @@ import {
 } from 'lucide-react';
 
 export default function ProjectsView() {
-  const { projects, tasks, toggleProjectFavorite, toggleProjectPinned, addProject, setSelectedProjectId } = useWorkOrbit();
-  const [viewMode, setViewMode] = useState('grid'); // grid, list, kanban, gantt, roadmap
+  const { activeTab, projects, tasks, toggleProjectFavorite, toggleProjectPinned, addProject, setSelectedProjectId } = useWorkOrbit();
+  
+  const getInitialViewMode = (tab) => {
+    if (tab === 'kanban') return 'kanban';
+    if (tab === 'gantt') return 'gantt';
+    if (tab === 'roadmap') return 'roadmap';
+    return 'grid';
+  };
+
+  const [viewMode, setViewMode] = useState(() => getInitialViewMode(activeTab));
+
+  useEffect(() => {
+    if (activeTab === 'kanban' || activeTab === 'gantt' || activeTab === 'roadmap') {
+      setViewMode(activeTab);
+    } else if (activeTab === 'all-projects') {
+      setViewMode('grid');
+    }
+  }, [activeTab]);
   const [searchFilter, setSearchFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
