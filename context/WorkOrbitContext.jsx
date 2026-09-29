@@ -175,7 +175,7 @@ export function WorkOrbitProvider({ children }) {
       revenue: (newProj.budget || 100000) * 1.3,
       team: ['usr-1', 'usr-2'],
       tags: newProj.tags || ['New'],
-      logo: newProj.logo || '📁',
+      logo: newProj.logo || '',
       color: '#3b82f6',
       favorite: false,
       pinned: false,

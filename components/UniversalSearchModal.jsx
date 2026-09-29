@@ -69,7 +69,7 @@ export default function UniversalSearchModal() {
                     className="p-2.5 rounded-xl hover:bg-blue-50 cursor-pointer flex items-center justify-between border border-slate-100 transition"
                   >
                     <div className="flex items-center gap-2 font-bold text-slate-900">
-                      <span>{p.logo}</span>
+                      {p.logo ? <span>{p.logo}</span> : null}
                       <span>{p.name}</span>
                     </div>
                     <span className="text-[10px] text-slate-500">{p.client}</span>

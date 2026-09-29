@@ -133,7 +133,7 @@ export default function DashboardView() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">{proj.logo}</span>
+                      {proj.logo ? <span className="text-2xl">{proj.logo}</span> : null}
                       <div>
                         <div className="font-bold text-slate-900 text-sm flex items-center gap-2">
                           {proj.name}

@@ -219,7 +219,7 @@ export default function Sidebar() {
                   className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs text-slate-300 hover:bg-slate-800 transition group"
                 >
                   <div className="flex items-center gap-2 truncate">
-                    <span>{proj.logo}</span>
+                    {proj.logo ? <span>{proj.logo}</span> : null}
                     <span className="truncate">{proj.name}</span>
                   </div>
                   <span className={`w-2 h-2 rounded-full ${proj.health === 'Healthy' ? 'bg-emerald-500' : proj.health === 'At Risk' ? 'bg-amber-500' : 'bg-rose-500'}`}></span>

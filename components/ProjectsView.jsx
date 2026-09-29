@@ -47,7 +47,7 @@ export default function ProjectsView() {
       budget: Number(newProjBudget),
       priority: newProjPriority,
       projectManager: 'Karthik Raja',
-      logo: '🚀'
+      logo: ''
     });
     setNewProjName('');
     setNewProjClient('');
@@ -148,7 +148,7 @@ export default function ProjectsView() {
             <div key={proj.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition space-y-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl p-2 rounded-xl bg-slate-100">{proj.logo}</span>
+                  {proj.logo ? <span className="text-3xl p-2 rounded-xl bg-slate-100">{proj.logo}</span> : null}
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-slate-900 text-base">{proj.name}</h3>
@@ -240,7 +240,7 @@ export default function ProjectsView() {
               {filteredProjects.map(proj => (
                 <tr key={proj.id} className="hover:bg-slate-50 transition">
                   <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                    <span>{proj.logo}</span>
+                    {proj.logo ? <span>{proj.logo}</span> : null}
                     <span>{proj.name}</span>
                   </td>
                   <td className="p-4 text-slate-600">{proj.client}</td>
@@ -278,7 +278,7 @@ export default function ProjectsView() {
                 {projects.filter(p => p.status === col).map(proj => (
                   <div key={proj.id} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
                     <div className="flex items-center gap-2 font-bold text-slate-900 text-xs">
-                      <span>{proj.logo}</span>
+                      {proj.logo ? <span>{proj.logo}</span> : null}
                       <span>{proj.name}</span>
                     </div>
                     <p className="text-[11px] text-slate-500 line-clamp-1">{proj.client}</p>
@@ -310,7 +310,7 @@ export default function ProjectsView() {
               <div key={proj.id} className="space-y-1">
                 <div className="flex justify-between text-xs font-semibold text-slate-800">
                   <span className="flex items-center gap-2">
-                    <span>{proj.logo}</span>
+                    {proj.logo ? <span>{proj.logo}</span> : null}
                     <span>{proj.name}</span>
                   </span>
                   <span className="font-mono text-slate-500">{proj.startDate} ➔ {proj.deadline}</span>
