@@ -1,5 +1,6 @@
 import React from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
+import { useAuth } from '../context/AuthContext';
 import {
   TrendingUp,
   AlertTriangle,
@@ -16,7 +17,10 @@ import {
 } from 'lucide-react';
 
 export default function DashboardView() {
+  const { user } = useAuth();
   const { projects, tasks, teamMembers, meetings, setActiveTab, setSelectedTaskId, setSelectedProjectId } = useWorkOrbit();
+
+  const userName = user?.name ? user.name.split(' ')[0] : 'muni';
 
   // Metrics calculation
   const totalProjects = projects.length;
@@ -41,7 +45,7 @@ export default function DashboardView() {
               </span>
               <span className="text-slate-400 text-xs">ABC Technologies Workspace</span>
             </div>
-            <h2 className="text-2xl font-black text-white">Welcome back, Karthik! 👋</h2>
+            <h2 className="text-2xl font-black text-white">Welcome back, {userName}!</h2>
             <p className="text-slate-300 text-xs mt-1 max-w-xl">
               Here is your project health overview, team workload metrics, and priority task radar for today.
             </p>
