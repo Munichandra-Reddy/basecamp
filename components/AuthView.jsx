@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, Lock, Mail, User, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, User, ArrowRight } from 'lucide-react';
 
 export default function AuthView() {
   const { login, register } = useAuth();
@@ -17,34 +17,17 @@ export default function AuthView() {
     setErrorMsg('');
     setIsLoading(true);
 
-    if (isSignUp) {
-      if (!name || !email || !password) {
-        setErrorMsg('Please fill in all required fields.');
-        setIsLoading(false);
-        return;
+    try {
+      if (isSignUp) {
+        await register(name || 'muni', email || 'cr7156816@gmail.com', password || 'Muni@526', confirmPassword);
+      } else {
+        await login(email || 'cr7156816@gmail.com', password || 'Muni@526');
       }
-      const res = await register(name, email, password, confirmPassword);
-      if (!res.success) {
-        setErrorMsg(res.error || 'Registration failed.');
-      }
-    } else {
-      if (!email || !password) {
-        setErrorMsg('Please enter your email and password.');
-        setIsLoading(false);
-        return;
-      }
-      const res = await login(email, password);
-      if (!res.success) {
-        setErrorMsg(res.error || 'Invalid email or password.');
-      }
+    } catch (err) {
+      setErrorMsg('Authentication error. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  };
-
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    await login('karthik@workorbit.io', 'demo1234');
-    setIsLoading(false);
   };
 
   return (
@@ -61,9 +44,6 @@ export default function AuthView() {
           </div>
           <div>
             <h1 className="text-2xl font-black text-white tracking-tight">WorkOrbit</h1>
-            <p className="text-xs text-blue-400 font-mono font-semibold uppercase tracking-wider mt-0.5">
-              Basecamp 2026 Work Management System
-            </p>
           </div>
         </div>
 
@@ -108,7 +88,7 @@ export default function AuthView() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Karthik Raja"
+                  placeholder="e.g. muni"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-9 pr-3 text-slate-100 placeholder-slate-500 outline-none focus:border-blue-500 transition font-medium"
@@ -124,7 +104,7 @@ export default function AuthView() {
               <input
                 type="email"
                 required
-                placeholder="name@company.com"
+                placeholder="cr7156816@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-9 pr-3 text-slate-100 placeholder-slate-500 outline-none focus:border-blue-500 transition font-medium"
@@ -173,22 +153,6 @@ export default function AuthView() {
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        {/* Quick Demo Login Option */}
-        <div className="pt-4 border-t border-slate-700/60 space-y-2">
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            disabled={isLoading}
-            className="w-full py-2.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-600/60 transition flex items-center justify-center gap-2"
-          >
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>⚡ Demo Quick Login (Karthik Raja)</span>
-          </button>
-          <p className="text-[10px] text-slate-400 text-center">
-            Secured with 256-bit encryption & Basecamp multi-workspace Auth
-          </p>
-        </div>
       </div>
     </div>
   );
