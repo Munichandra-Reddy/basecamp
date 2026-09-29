@@ -126,8 +126,6 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   };
-    }
-  };
 
   const register = async (name, email, password, confirmPassword) => {
     setLoading(true);
