@@ -1,6 +1,7 @@
 import React from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
 import { useWorkspace } from '../context/WorkspaceContext';
+import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -36,16 +37,22 @@ import {
   ChevronDown,
   Building2,
   ShieldAlert,
-  FileSpreadsheet
+  FileSpreadsheet,
+  LogOut
 } from 'lucide-react';
 
 export default function Sidebar() {
+  const { user, logout } = useAuth();
   const { activeTab, setActiveTab, projects, toggleProjectFavorite, setIsSearchOpen, setIsQuickTaskOpen, notifications } = useWorkOrbit();
   const { activeWorkspace, workspaces, switchWorkspace } = useWorkspace();
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = React.useState(false);
 
   const unreadNotifCount = notifications.filter(n => !n.read).length;
   const favoriteProjects = projects.filter(p => p.favorite);
+
+  const userAvatar = user?.avatar_url || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80';
+  const userName = user?.name || 'Karthik Raja';
+  const userRole = user?.role || 'Lead PM & Admin';
 
   const navCategories = [
     {
@@ -145,7 +152,8 @@ export default function Sidebar() {
           </div>
           <button
             onClick={() => setIsQuickTaskOpen(true)}
-            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors title='Quick Task Creation'"
+            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+            title="Quick Task Creation"
           >
             <PlusCircle className="w-4 h-4" />
           </button>
@@ -267,25 +275,28 @@ export default function Sidebar() {
         ))}
       </div>
 
-      {/* User Footer Profile */}
+      {/* User Footer Profile & Logout */}
       <div className="p-3 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <img
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
-            alt="Karthik Raja"
+            src={userAvatar}
+            alt={userName}
             className="w-8 h-8 rounded-full border border-blue-500/40 object-cover"
           />
           <div className="text-left leading-tight truncate">
-            <div className="text-xs font-semibold text-white truncate">Karthik Raja</div>
-            <div className="text-[10px] text-slate-400 truncate">Lead PM & Admin</div>
+            <div className="text-xs font-semibold text-white truncate">{userName}</div>
+            <div className="text-[10px] text-slate-400 truncate">{userRole}</div>
           </div>
         </div>
-        <button
-          onClick={() => setActiveTab('settings')}
-          className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition"
-        >
-          <Settings className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={logout}
+            className="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition"
+            title="Log Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </aside>
   );

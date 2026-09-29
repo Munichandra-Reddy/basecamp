@@ -1,5 +1,7 @@
 import React from 'react';
 import { WorkOrbitProvider, useWorkOrbit } from '../context/WorkOrbitContext';
+import { useAuth } from '../context/AuthContext';
+import AuthView from '../components/AuthView';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import DashboardView from '../components/DashboardView';
@@ -16,7 +18,13 @@ import UniversalSearchModal from '../components/UniversalSearchModal';
 import QuickTaskModal from '../components/QuickTaskModal';
 
 function MainAppContent() {
+  const { user } = useAuth();
   const { activeTab } = useWorkOrbit();
+
+  // If user is not authenticated, render Login / Sign Up Screen
+  if (!user) {
+    return <AuthView />;
+  }
 
   const renderActiveView = () => {
     switch (activeTab) {
