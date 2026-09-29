@@ -177,7 +177,7 @@ export default function DashboardView() {
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
               <Flame className="w-4 h-4 text-amber-500" />
-              Today's Focus
+              Today&apos;s Focus
             </h3>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
               High Priority

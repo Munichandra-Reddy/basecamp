@@ -141,7 +141,7 @@ export default function AIView() {
               }}
               className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 font-medium transition text-[11px] border border-slate-200"
             >
-              "{p}"
+              &quot;{p}&quot;
             </button>
           ))}
         </div>
