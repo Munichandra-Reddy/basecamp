@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
 import { FolderGit2, FileText, BookOpen, GitCommit, Plus, Download, Tag, Clock, CheckCircle2, Search } from 'lucide-react';
 
 export default function ResourcesView() {
-  const { files, decisions, addDecision } = useWorkOrbit();
-  const [resourceTab, setResourceTab] = useState('files'); // files, docs, wiki, decisions
+  const { activeTab, files, decisions, addDecision } = useWorkOrbit();
+
+  const getInitialResourceTab = (tab) => {
+    if (tab === 'docs') return 'decisions';
+    if (tab === 'wiki') return 'wiki';
+    return 'files';
+  };
+
+  const [resourceTab, setResourceTab] = useState(() => getInitialResourceTab(activeTab));
+
+  useEffect(() => {
+    if (activeTab === 'docs') {
+      setResourceTab('decisions');
+    } else if (activeTab === 'wiki') {
+      setResourceTab('wiki');
+    } else if (activeTab === 'files') {
+      setResourceTab('files');
+    }
+  }, [activeTab]);
   const [newDecTitle, setNewDecTitle] = useState('');
   const [newDecReason, setNewDecReason] = useState('');
   const [isDecModalOpen, setIsDecModalOpen] = useState(false);

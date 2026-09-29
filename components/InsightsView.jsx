@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorkOrbit } from '../context/WorkOrbitContext';
 import { LineChart, PieChart, Target, DollarSign, TrendingUp, Users, Award, ShieldCheck } from 'lucide-react';
 
 export default function InsightsView() {
-  const { projects, teamMembers, goals } = useWorkOrbit();
-  const [insightTab, setInsightTab] = useState('reports'); // reports, goals, finance
+  const { activeTab, projects, teamMembers, goals } = useWorkOrbit();
+
+  const getInitialInsightTab = (tab) => {
+    if (tab === 'goals') return 'goals';
+    if (tab === 'analytics') return 'finance';
+    return 'reports';
+  };
+
+  const [insightTab, setInsightTab] = useState(() => getInitialInsightTab(activeTab));
+
+  useEffect(() => {
+    if (activeTab === 'goals') {
+      setInsightTab('goals');
+    } else if (activeTab === 'analytics') {
+      setInsightTab('finance');
+    } else if (activeTab === 'reports') {
+      setInsightTab('reports');
+    }
+  }, [activeTab]);
 
   const totalBudget = projects.reduce((acc, p) => acc + p.budget, 0);
   const totalSpent = projects.reduce((acc, p) => acc + p.spent, 0);
