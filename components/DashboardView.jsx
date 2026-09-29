@@ -214,7 +214,9 @@ export default function DashboardView() {
 
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
                   <div className="flex items-center gap-1.5">
-                    <img src={task.assigneeAvatar} alt="" className="w-4 h-4 rounded-full" />
+                    <div className="w-4 h-4 rounded-full bg-blue-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">
+                      {task.assigneeName ? task.assigneeName.charAt(0).toUpperCase() : 'U'}
+                    </div>
                     <span>{task.assigneeName}</span>
                   </div>
                   <div className="flex items-center gap-1 font-mono text-slate-700">
@@ -285,7 +287,9 @@ export default function DashboardView() {
                 <div key={member.id} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
+                      <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        {member.name ? member.name.charAt(0).toUpperCase() : 'U'}
+                      </div>
                       <div>
                         <div className="font-bold text-slate-900 text-xs">{member.name}</div>
                         <div className="text-[10px] text-slate-500">{member.role}</div>

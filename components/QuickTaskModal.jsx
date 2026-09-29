@@ -20,7 +20,7 @@ export default function QuickTaskModal() {
       projectName: projObj ? projObj.name : 'E-Commerce Website',
       priority: taskPriority,
       assigneeName: 'Rahul Kumar',
-      assigneeAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+      assigneeAvatar: ''
     });
     setTaskTitle('');
     setIsQuickTaskOpen(false);

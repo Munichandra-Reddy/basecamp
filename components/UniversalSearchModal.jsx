@@ -120,7 +120,9 @@ export default function UniversalSearchModal() {
                     }}
                     className="p-2.5 rounded-xl hover:bg-blue-50 cursor-pointer flex items-center gap-2 border border-slate-100 transition"
                   >
-                    <img src={m.avatar} alt="" className="w-5 h-5 rounded-full" />
+                    <div className="w-5 h-5 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                      {m.name ? m.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
                     <span className="font-bold text-slate-900">{m.name}</span>
                     <span className="text-[10px] text-slate-400">({m.role})</span>
                   </div>

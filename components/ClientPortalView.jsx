@@ -25,7 +25,7 @@ export default function ClientPortalView() {
       priority: 'Urgent',
       status: 'Todo',
       assigneeName: 'Priya Sharma',
-      assigneeAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+      assigneeAvatar: '',
       type: 'Bug'
     });
     setClientComment('');
@@ -42,7 +42,7 @@ export default function ClientPortalView() {
       priority: 'High',
       status: 'In Progress',
       assigneeName: 'Rahul Kumar',
-      assigneeAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+      assigneeAvatar: '',
       type: 'Bug'
     });
     setBugTitle('');
