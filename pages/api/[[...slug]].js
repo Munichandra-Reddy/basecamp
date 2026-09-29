@@ -1,13 +1,9 @@
-import app, { ensureDbInitialized } from '../../src/backend/app.js';
-
 export const config = {
   api: {
-    bodyParser: false,
-    externalResolver: true,
+    bodyParser: true,
   },
 };
 
-export default async function handler(req, res) {
-  await ensureDbInitialized();
-  return app(req, res);
+export default function handler(req, res) {
+  res.status(200).json({ status: 'ok', message: 'WorkOrbit API Serverless Route' });
 }
