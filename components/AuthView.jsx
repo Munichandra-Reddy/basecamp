@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, Lock, Mail, User, ArrowRight } from 'lucide-react';
+import { Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function AuthView() {
   const { login, register } = useAuth();
@@ -17,22 +17,54 @@ export default function AuthView() {
     setErrorMsg('');
     setIsLoading(true);
 
-    try {
-      if (isSignUp) {
-        await register(name || 'muni', email || 'cr7156816@gmail.com', password || 'Muni@526', confirmPassword);
-      } else {
-        await login(email || 'cr7156816@gmail.com', password || 'Muni@526');
-      }
-    } catch (err) {
-      setErrorMsg('Authentication error. Please try again.');
-    } finally {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+      setErrorMsg('Please enter a valid email address.');
       setIsLoading(false);
+      return;
     }
+
+    if (!password) {
+      setErrorMsg('Please enter your password.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (isSignUp) {
+      if (!name || name.trim().length < 2) {
+        setErrorMsg('Please enter your full name (minimum 2 characters).');
+        setIsLoading(false);
+        return;
+      }
+      if (password.length < 6) {
+        setErrorMsg('Password must be at least 6 characters long.');
+        setIsLoading(false);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setErrorMsg('Passwords do not match. Please re-enter.');
+        setIsLoading(false);
+        return;
+      }
+
+      const res = await register(name, cleanEmail, password, confirmPassword);
+      if (!res.success) {
+        setErrorMsg(res.error || 'Registration failed.');
+      }
+    } else {
+      const res = await login(cleanEmail, password);
+      if (!res.success) {
+        setErrorMsg(res.error || 'Invalid email or password.');
+      }
+    }
+    setIsLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden text-slate-100">
-      {/* Glow Effects Background */}
+      {/* Background Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-blue-600/20 blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-indigo-600/20 blur-3xl pointer-events-none"></div>
 
@@ -71,10 +103,11 @@ export default function AuthView() {
           </button>
         </div>
 
-        {/* Error Alert */}
+        {/* Validation Error Alert */}
         {errorMsg && (
-          <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold text-center">
-            {errorMsg}
+          <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <span>{errorMsg}</span>
           </div>
         )}
 

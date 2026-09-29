@@ -1,26 +1,36 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../services/api';
 
 const AuthContext = createContext();
 
+const initialUsers = [
+  {
+    id: 1,
+    name: 'muni',
+    email: 'cr7156816@gmail.com',
+    password: 'Muni@526',
+    role: 'Workspace Admin',
+    status: 'Active'
+  },
+  {
+    id: 2,
+    name: 'Karthik Raja',
+    email: 'karthik@workorbit.io',
+    password: 'demo1234',
+    role: 'Lead PM & Admin',
+    status: 'Active'
+  }
+];
+
 const getRegisteredUsers = () => {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') return initialUsers;
   try {
     const list = JSON.parse(localStorage.getItem('teamflow_registered_users') || '[]');
-    const muniAccount = {
-      id: 999,
-      name: 'muni',
-      email: 'cr7156816@gmail.com',
-      password: 'Muni@526',
-      role: 'Workspace Admin',
-      status: 'Active'
-    };
-    if (!list.some(u => u.email.toLowerCase() === 'cr7156816@gmail.com')) {
-      list.push(muniAccount);
-    }
-    return list;
+    const map = new Map();
+    initialUsers.forEach(u => map.set(u.email.toLowerCase(), u));
+    list.forEach(u => map.set(u.email.toLowerCase(), u));
+    return Array.from(map.values());
   } catch (e) {
-    return [{ id: 999, name: 'muni', email: 'cr7156816@gmail.com', password: 'Muni@526', role: 'Workspace Admin', status: 'Active' }];
+    return initialUsers;
   }
 };
 
@@ -31,7 +41,7 @@ const saveRegisteredUser = (userObj) => {
     const updated = [userObj, ...existing.filter(u => u.email.toLowerCase() !== userObj.email.toLowerCase())];
     localStorage.setItem('teamflow_registered_users', JSON.stringify(updated));
   } catch (e) {
-    console.error('Failed to save registered user to localStorage:', e);
+    console.error('Failed to save registered user:', e);
   }
 };
 
@@ -59,146 +69,112 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (token && token !== 'demo_token_123') {
-      api.get('/auth/me')
-        .then(res => {
-          if (res.data.user) {
-            setUser(res.data.user);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('teamflow_user', JSON.stringify(res.data.user));
-            }
-          }
-        })
-        .catch(() => {});
-    }
-  }, [token]);
-
   const login = async (email, password) => {
     setLoading(true);
     const cleanEmail = (email || '').trim().toLowerCase();
-    
+
     if (!cleanEmail || !password) {
       setLoading(false);
       return { success: false, error: 'Email and password are required.' };
     }
 
-    try {
-      const res = await api.post('/auth/login', { email: cleanEmail, password });
-      const loggedUser = res.data.user;
-      const userToken = res.data.token;
-      setUser(loggedUser);
-      setToken(userToken);
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('teamflow_logged_out');
-        localStorage.setItem('teamflow_token', userToken);
-        localStorage.setItem('teamflow_user', JSON.stringify(loggedUser));
-      }
-      saveRegisteredUser({ ...loggedUser, password });
-      return { success: true };
-    } catch (err) {
-      const registered = getRegisteredUsers();
-      const match = registered.find(u => u.email.toLowerCase() === cleanEmail);
+    const registered = getRegisteredUsers();
+    const match = registered.find(u => u.email.toLowerCase() === cleanEmail);
 
-      const userDisplayName = cleanEmail.includes('cr7156816') || cleanEmail.includes('muni')
-        ? 'muni'
-        : (match?.name || cleanEmail.split('@')[0] || 'muni');
-
-      const loggedUser = {
-        id: match?.id || Date.now(),
-        name: userDisplayName,
-        email: cleanEmail,
-        avatar_url: match?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userDisplayName)}`,
-        role: match?.role || 'Workspace Admin',
-        status: 'Active'
-      };
-
-      setUser(loggedUser);
-      setToken('demo_token_123');
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('teamflow_logged_out');
-        localStorage.setItem('teamflow_token', 'demo_token_123');
-        localStorage.setItem('teamflow_user', JSON.stringify(loggedUser));
-      }
-      saveRegisteredUser({ ...loggedUser, password });
-      return { success: true };
-    } finally {
+    if (!match) {
       setLoading(false);
+      return { success: false, error: 'Invalid email or password. Please check your credentials.' };
     }
+
+    if (match.password && match.password !== password) {
+      setLoading(false);
+      return { success: false, error: 'Invalid email or password. Please check your credentials.' };
+    }
+
+    const loggedUser = {
+      id: match.id || Date.now(),
+      name: match.name || 'muni',
+      email: match.email,
+      avatar_url: match.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(match.name || 'muni')}`,
+      role: match.role || 'Workspace Admin',
+      status: 'Active'
+    };
+
+    setUser(loggedUser);
+    setToken('demo_token_123');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('teamflow_logged_out');
+      localStorage.setItem('teamflow_token', 'demo_token_123');
+      localStorage.setItem('teamflow_user', JSON.stringify(loggedUser));
+    }
+    setLoading(false);
+    return { success: true };
   };
 
   const register = async (name, email, password, confirmPassword) => {
     setLoading(true);
     const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanName = (name || '').trim();
 
-    if (!name || !cleanEmail || !password) {
+    if (!cleanName || cleanName.length < 2) {
       setLoading(false);
-      return { success: false, error: 'Name, email, and password are required.' };
+      return { success: false, error: 'Please enter your full name (minimum 2 characters).' };
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      setLoading(false);
+      return { success: false, error: 'Please enter a valid email address.' };
+    }
+
+    if (!password || password.length < 6) {
+      setLoading(false);
+      return { success: false, error: 'Password must be at least 6 characters long.' };
     }
 
     if (confirmPassword && password !== confirmPassword) {
       setLoading(false);
-      return { success: false, error: 'Passwords do not match.' };
+      return { success: false, error: 'Passwords do not match. Please re-enter.' };
+    }
+
+    const registered = getRegisteredUsers();
+    if (registered.some(u => u.email.toLowerCase() === cleanEmail)) {
+      setLoading(false);
+      return { success: false, error: 'An account with this email already exists. Please sign in.' };
     }
 
     const newUser = {
       id: Date.now(),
-      name,
+      name: cleanName,
       email: cleanEmail,
-      password,
-      avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
+      password: password,
+      avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(cleanName)}`,
       role: 'Workspace Admin',
       status: 'Active'
     };
 
     saveRegisteredUser(newUser);
 
-    try {
-      const res = await api.post('/auth/register', { name, email: cleanEmail, password, confirmPassword });
-      const regUser = res.data.user || newUser;
-      const regToken = res.data.token || 'demo_token_123';
-      setUser(regUser);
-      setToken(regToken);
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('teamflow_logged_out');
-        localStorage.setItem('teamflow_token', regToken);
-        localStorage.setItem('teamflow_user', JSON.stringify(regUser));
-      }
-      return { success: true };
-    } catch (err) {
-      setUser(newUser);
-      setToken('demo_token_123');
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('teamflow_logged_out');
-        localStorage.setItem('teamflow_token', 'demo_token_123');
-        localStorage.setItem('teamflow_user', JSON.stringify(newUser));
-      }
-      return { success: true };
-    } finally {
-      setLoading(false);
+    setUser(newUser);
+    setToken('demo_token_123');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('teamflow_logged_out');
+      localStorage.setItem('teamflow_token', 'demo_token_123');
+      localStorage.setItem('teamflow_user', JSON.stringify(newUser));
     }
+    setLoading(false);
+    return { success: true };
   };
 
   const updateProfile = async (name, email) => {
     setLoading(true);
-    try {
-      const res = await api.put('/auth/profile', { name, email });
-      const updatedUser = res.data.user || { ...user, name, email };
-      setUser(updatedUser);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('teamflow_user', JSON.stringify(updatedUser));
-      }
-      return { success: true, user: updatedUser };
-    } catch (err) {
-      const updatedUser = { ...user, name, email };
-      setUser(updatedUser);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('teamflow_user', JSON.stringify(updatedUser));
-      }
-      return { success: true, user: updatedUser };
-    } finally {
-      setLoading(false);
+    const updatedUser = { ...user, name, email };
+    setUser(updatedUser);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('teamflow_user', JSON.stringify(updatedUser));
     }
+    setLoading(false);
+    return { success: true, user: updatedUser };
   };
 
   const logout = () => {
